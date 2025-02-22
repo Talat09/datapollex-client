@@ -18,7 +18,9 @@ const CourseDetail = () => {
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/modules");
+        const response = await fetch(
+          "https://datapollex-backend.vercel.app/api/modules"
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

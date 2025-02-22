@@ -19,10 +19,15 @@ const CreateCourse = () => {
     description: "",
   });
   const [uploading, setUploading] = useState<boolean>(false);
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error";
+  } | null>(null);
 
   // Handle change of text inputs
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -77,7 +82,10 @@ const CreateCourse = () => {
         price: Number(formData.price), // Ensure price is a number
       };
 
-      await axios.post("http://localhost:5000/api/courses", payload);
+      await axios.post(
+        "https://datapollex-backend.vercel.app/api/courses",
+        payload
+      );
       setMessage({ text: "Course created successfully!", type: "success" });
 
       // Reset form after submission
@@ -88,7 +96,10 @@ const CreateCourse = () => {
         description: "",
       });
     } catch (error) {
-      setMessage({ text: "Failed to create course. Please try again.", type: "error" });
+      setMessage({
+        text: "Failed to create course. Please try again.",
+        type: "error",
+      });
       console.error("Error creating course:", error);
     }
   };
@@ -96,11 +107,17 @@ const CreateCourse = () => {
   return (
     <AuthGuard allowedRoles={["admin"]}>
       <div className="max-w-lg mx-auto p-6 border rounded-lg shadow-md bg-white">
-        <h2 className="text-2xl font-bold text-center mb-6">Create a New Course</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Create a New Course
+        </h2>
 
         {/* Display message */}
         {message && (
-          <p className={`text-center mb-4 ${message.type === "error" ? "text-red-600" : "text-green-600"}`}>
+          <p
+            className={`text-center mb-4 ${
+              message.type === "error" ? "text-red-600" : "text-green-600"
+            }`}
+          >
             {message.text}
           </p>
         )}
@@ -108,7 +125,10 @@ const CreateCourse = () => {
         <form onSubmit={handleSubmit}>
           {/* Thumbnail Upload */}
           <div className="mb-4">
-            <label htmlFor="thumbnail" className="block text-sm font-semibold mb-2">
+            <label
+              htmlFor="thumbnail"
+              className="block text-sm font-semibold mb-2"
+            >
               Thumbnail
             </label>
             <input
@@ -170,7 +190,10 @@ const CreateCourse = () => {
 
           {/* Description */}
           <div className="mb-4">
-            <label htmlFor="description" className="block text-sm font-semibold mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-semibold mb-2"
+            >
               Description
             </label>
             <textarea
