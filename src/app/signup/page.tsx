@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/router";
+
 import { useState } from "react";
 
 const LoginPage = () => {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const response = await fetch(
@@ -23,9 +23,10 @@ const LoginPage = () => {
     );
 
     const data = await response.json();
+   
     if (data.token) {
       // Handle successful login (store token, redirect, etc.)
-      router.push("/courses");
+      // router.push("/courses");
     } else {
       // Handle login error
     }
