@@ -1,32 +1,75 @@
-import Link from "next/link";
+"use client";
+import React, { useEffect, useState } from "react";
 
-interface LectureCardProps {
-  lecture: {
-    _id: string;
-    title: string;
-    videoUrl: string;
-    pdfs: string[];
-  };
+interface Lecture {
+  _id: string;
+  title: string;
+  videoUrl: string;
 }
 
-const LectureCard = ({ lecture }: LectureCardProps) => {
+const LectureCard = () => {
+  const [lectures, setLectures] = useState<Lecture[]>([]);
+
+  useEffect(() => {
+    const fetchLectures = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/lectures");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data: Lecture[] = await response.json();
+        setLectures(data);
+      } catch (error) {
+        console.error("Failed to fetch lectures:", error);
+      }
+    };
+
+    fetchLectures();
+  }, []);
+
+  console.log("lectures:", lectures);
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 mb-4">
-      <h2 className="text-lg font-semibold">{lecture.title}</h2>
-      <div className="mt-2">
-        <Link href={lecture.videoUrl} passHref>
-          <button className="text-blue-500">Watch Video</button>
-        </Link>
-      </div>
-      <div className="mt-2">
-        {lecture.pdfs.map((pdf, index) => (
-          <Link href={pdf} key={index} passHref>
-            <button className="text-blue-500">{`Download PDF ${index + 1}`}</button>
-          </Link>
-        ))}
-      </div>
+    <div>
+      <h1>Lecture Card</h1>
+      {lectures.map((lecture) => (
+        <div
+          key={lecture._id}
+          className="border p-4 rounded-lg shadow-md hover:shadow-lg my-6 w-1/2"
+        >
+          <Video src={lecture.videoUrl} />
+          <h3 className="text-2xl font-semibold mt-4">{lecture.title}</h3>
+        </div>
+      ))}
     </div>
   );
 };
 
 export default LectureCard;
+
+interface VideoProps {
+  src: string;
+}
+
+export function Video({ src }: VideoProps) {
+  // Convert standard YouTube URLs to embed format
+  const getEmbedUrl = (url: string) => {
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/;
+    const match = url.match(youtubeRegex);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  };
+
+  return (
+    <iframe
+      width="560"
+      height="315"
+      src={getEmbedUrl(src)}
+      title="Lecture Video"
+      allow="autoplay; encrypted-media"
+      allowFullScreen
+      className="w-full h-64 rounded-lg"
+    ></iframe>
+  );
+}
